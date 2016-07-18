@@ -24,6 +24,7 @@ public class PageService implements PageServiceInterface {
 
 	@Override
 	public Page findOne(final Long id) {
+		log.info("findOne({})", id);
 //		String slug = "dmi-5";
 //		String url = "http://www.dmi.dk/hav/udsigter/farvandsudsigter/femdoegnsudsigter/";
 //		String selector = "div#c3123.csc-default";
@@ -44,12 +45,14 @@ public class PageService implements PageServiceInterface {
 
 	@Override
 	public Page save(final Page page) {
+		log.info("save()");
 		pageRepository.save(page);
 		return page;
 	}
 
 	@Override
 	public Iterable<Page> findAll() {
+		log.info("findAll()");
 		return pageRepository.findAll();
 	}
 }

@@ -3,6 +3,7 @@ package dk.surfstation.iscrape.business;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -17,8 +18,11 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories
 public class Application {
-	private final Database database = Database.POSTGRESQL;
-//	private final Database database = Database.MYSQL;
+	@Autowired
+	private Database database;
+	@Autowired
+	private DataSource dataSource;
+	private final boolean showSql = true;
 
 	@PostConstruct
 	public void loadDriver() {
@@ -29,20 +33,33 @@ public class Application {
 			// not on classpath
 		}
 	}
-/*
+
+//	@Primary
 	@Bean
-	public DataSource dataSource() {
+	public Database mysqlDataBase() {
+		return Database.MYSQL;
+	}
+
+//	@Primary
+	@Bean
+	public DataSource mysqlDataSource() {
 		DriverManagerDataSource driver = new DriverManagerDataSource();
 		driver.setDriverClassName("com.mysql.jdbc.Driver");
-		driver.setUrl("jdbc:mysql://192.168.0.3/iscrape");
+		driver.setUrl("jdbc:mysql://192.168.0.3/iscrape?useSSL=false");
 		driver.setUsername("root");
 		driver.setPassword("skummet");
 		return driver;
 	}
-*/
 
+	@Primary
 	@Bean
-	public DataSource dataSource() {
+	public Database postgresqlDataBase() {
+		return Database.POSTGRESQL;
+	}
+
+	@Primary
+	@Bean
+	public DataSource postgresqlDataSource() {
 		DriverManagerDataSource driver = new DriverManagerDataSource();
 		driver.setDriverClassName("org.postgresql.Driver");
 		driver.setUrl("jdbc:postgresql://192.168.0.3/iscrape");
@@ -66,11 +83,12 @@ public class Application {
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setDatabase(database);
 		vendorAdapter.setGenerateDdl(true);
+		vendorAdapter.setShowSql(showSql);
 
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 		factory.setJpaVendorAdapter(vendorAdapter);
 		factory.setPackagesToScan(getClass().getPackage().getName());
-		factory.setDataSource(dataSource());
+		factory.setDataSource(dataSource);
 
 		return factory;
 	}
