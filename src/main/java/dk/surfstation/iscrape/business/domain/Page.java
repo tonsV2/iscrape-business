@@ -9,12 +9,15 @@ import javax.persistence.Id;
 @Entity
 public class Page {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String slug;
 	private String url;
 	private String selector;
 	private String content;
+
+	public Page() {
+	}
 
 	public Page(final Long id, final String slug, final String url, final String selector, final String content) {
 		this.id = id;
