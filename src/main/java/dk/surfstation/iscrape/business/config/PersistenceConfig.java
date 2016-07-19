@@ -1,4 +1,4 @@
-package dk.surfstation.iscrape.business;
+package dk.surfstation.iscrape.business.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories
-public class Application {
+public class PersistenceConfig {
 	@Autowired
 	private Database database;
 	@Autowired
@@ -31,6 +31,7 @@ public class Application {
 			//on classpath
 		} catch(ClassNotFoundException e) {
 			// not on classpath
+			e.printStackTrace();
 		}
 	}
 
