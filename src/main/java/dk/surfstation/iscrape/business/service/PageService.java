@@ -33,7 +33,8 @@ public class PageService implements PageServiceInterface {
 		Page page = pageRepository.findOne(id);
 		assert page != null;
 		try {
-			final Document document = Jsoup.parse(new URL(page.getUrl()), 5 * 1000);
+			int timeoutMillis = 5 * 1000;
+			Document document = Jsoup.parse(new URL(page.getUrl()), timeoutMillis);
 			Elements elements = document.select(page.getSelector());
 			Element element = elements.first();
 			page.setContent(element.html());
